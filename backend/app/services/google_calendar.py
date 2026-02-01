@@ -56,7 +56,7 @@ class GoogleCalendarService:
         
         return auth_url
     
-    def handle_oauth_callback(self, code: str):
+    def handle_oauth_callback(self, code: str) -> dict:
         """OAuth callback 처리 및 토큰 저장"""
         flow = Flow.from_client_config(
             self.client_config,
@@ -68,6 +68,13 @@ class GoogleCalendarService:
         flow.fetch_token(code=code)
         credentials = flow.credentials
         
+        # refresh_token 누락 경고
+        if not credentials.refresh_token:
+            logger.warning(
+                "refresh_token not received! Token will expire and require re-authentication. "
+                "User may need to revoke app access and re-authorize with prompt=consent."
+            )
+        
         # 토큰 저장
         expiry_timestamp = int(credentials.expiry.timestamp()) if credentials.expiry else 0
         self.token_db.save_token(
@@ -78,6 +85,15 @@ class GoogleCalendarService:
         )
         
         logger.info("OAuth token saved successfully")
+        
+        # 응답에 refresh_token 상태 포함
+        return {
+            "has_refresh_token": credentials.refresh_token is not None,
+            "warning": None if credentials.refresh_token else (
+                "refresh_token이 없습니다. 토큰 만료 시 재인증이 필요합니다. "
+                "문제가 지속되면 Google 계정 설정에서 앱 액세스를 취소 후 다시 연동하세요."
+            )
+        }
     
     def _get_credentials(self) -> Credentials:
         """저장된 토큰으로 Credentials 생성 및 갱신"""

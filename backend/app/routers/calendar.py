@@ -64,13 +64,18 @@ async def oauth_callback(code: str = Query(...)):
     """
     try:
         calendar_service = get_calendar_service()
-        calendar_service.handle_oauth_callback(code)
+        result = calendar_service.handle_oauth_callback(code)
         
-        # 간단한 HTML 응답
-        return {
+        response = {
             "message": "Google Calendar 연동 완료!",
             "status": "success"
         }
+        
+        # refresh_token 경고 포함
+        if result.get("warning"):
+            response["warning"] = result["warning"]
+        
+        return response
     except Exception as e:
         logger.error(f"OAuth callback failed: {e}")
         raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")

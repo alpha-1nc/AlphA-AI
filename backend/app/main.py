@@ -45,11 +45,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS 설정
+# CORS 설정 - 환경변수 기반
 settings = get_settings()
+cors_origins = ["http://localhost:3000"]  # 개발용 항상 포함
+if settings.FRONTEND_ORIGIN:
+    cors_origins.append(settings.FRONTEND_ORIGIN)
+logger.info(f"CORS allowed origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -69,6 +74,12 @@ async def root():
         "status": "running",
         "version": "1.0.0"
     }
+
+
+@app.get("/healthz")
+async def healthz():
+    """Railway health check endpoint"""
+    return {"ok": True}
 
 
 @app.get("/health")

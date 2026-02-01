@@ -3,7 +3,9 @@
  * 백엔드와 통신
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+// NEXT_PUBLIC_API_BASE: 배포 환경에서 설정 (예: https://api.yourdomain.com)
+// 설정되지 않으면 /api로 프록시 (로컬 개발용 next.config.js rewrites)
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "/api";
 
 export interface Citation {
   id: string;
