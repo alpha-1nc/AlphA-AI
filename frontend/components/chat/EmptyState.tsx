@@ -24,13 +24,13 @@ export function EmptyState({ onStartConversation }: EmptyStateProps) {
             <div className="max-w-2xl w-full text-center space-y-8 animate-fade-in-up">
                 {/* Welcome message */}
                 <div className="space-y-4">
-                    <div className="relative inline-flex items-center justify-center w-20 h-20 mb-4 bg-transparent">
+                    <div className="relative inline-flex items-center justify-center w-[125px] h-[125px] mb-2">
                         <Image
-                            src="/34C8AED3-A785-4263-ADE1-191C460BCB30.png"
+                            src={mounted && theme === "dark" ? "/logo-dark.png" : "/logo.png"}
                             alt="AlphA AI Logo"
-                            width={80}
-                            height={80}
-                            className={`object-contain ${mounted && theme === "dark" ? "logo-dark-mode" : ""}`}
+                            width={125}
+                            height={125}
+                            className="object-contain"
                             priority
                         />
                     </div>

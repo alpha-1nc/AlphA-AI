@@ -325,15 +325,17 @@ export function MemoryPanel({ className, hideHeader = false }: MemoryPanelProps)
               </div>
             )}
 
-            <div className="space-y-2 pb-2">
-              {filteredMemories.map((memory) => (
-                <MemoryCard
-                  key={memory.id}
-                  memory={memory}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
+            {searchResults !== null && (
+              <div className="space-y-2 pb-2">
+                {filteredMemories.map((memory) => (
+                  <MemoryCard
+                    key={memory.id}
+                    memory={memory}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>

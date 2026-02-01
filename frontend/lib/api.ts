@@ -196,3 +196,55 @@ export async function healthCheck(): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE}/health`);
   return handleResponse(response);
 }
+
+/**
+ * === Calendar API ===
+ */
+
+export interface CalendarEvent {
+  id: string;
+  summary: string;
+  start: string; // ISO 8601
+  end: string;   // ISO 8601
+  location: string;
+}
+
+export interface CreateCalendarEventRequest {
+  summary: string;
+  start_iso: string;
+  end_iso: string;
+  description?: string;
+  location?: string;
+}
+
+/**
+ * 캘린더 일정 조회
+ */
+export async function getCalendarEvents(
+  time_min?: string,
+  time_max?: string
+): Promise<CalendarEvent[]> {
+  const params = new URLSearchParams();
+  if (time_min) params.append("time_min", time_min);
+  if (time_max) params.append("time_max", time_max);
+
+  const queryString = params.toString();
+  const url = `${API_BASE}/calendar/events${queryString ? `?${queryString}` : ""}`;
+
+  const response = await fetch(url);
+  return handleResponse<CalendarEvent[]>(response);
+}
+
+/**
+ * 캘린더 일정 생성
+ */
+export async function createCalendarEvent(
+  request: CreateCalendarEventRequest
+): Promise<CalendarEvent> {
+  const response = await fetch(`${API_BASE}/calendar/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  return handleResponse<CalendarEvent>(response);
+}

@@ -132,6 +132,29 @@ def test_calendar_auth_url(base_url: str, verbose: bool = False) -> bool:
     return success
 
 
+def test_calendar_events(base_url: str, verbose: bool = False) -> bool:
+    """GET /calendar/events 테스트 - 일정 조회 (오늘)"""
+    url = f"{base_url}/calendar/events"
+    status, body = make_request(url)
+    
+    # 200 OK or 401/403 (미연동) 모두 정상으로 간주
+    # 실제 일정 조회 성공 시 list 응답
+    success = status in [200, 401, 403]
+    
+    if verbose:
+        print(f"  URL: {url}")
+        if status == 200:
+            if isinstance(body, list):
+                print(f"  Events count: {len(body)}")
+            else:
+                print(f"  Response: {json.dumps(body, ensure_ascii=False)}")
+        else:
+            print(f"  Status: {status} (expected if calendar not linked)")
+            print(f"  Response: {json.dumps(body, ensure_ascii=False)}")
+    
+    return success
+
+
 def run_tests(base_url: str, verbose: bool = False) -> bool:
     """모든 테스트 실행"""
     tests = [
@@ -140,6 +163,7 @@ def run_tests(base_url: str, verbose: bool = False) -> bool:
         ("Chat API", test_chat),
         ("Memories API", test_memories),
         ("Calendar OAuth URL", test_calendar_auth_url),
+        ("Calendar Events (Today)", test_calendar_events),
     ]
     
     print(f"\n{'='*50}")

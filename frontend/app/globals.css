@@ -196,11 +196,6 @@
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 }
 
-/* Logo filter for dark mode */
-.logo-dark-mode {
-  filter: invert(1) brightness(2);
-}
-
 /* Hide scrollbar utility */
 .scrollbar-hidden {
   scrollbar-width: none;

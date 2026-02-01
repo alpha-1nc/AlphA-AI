@@ -2,25 +2,32 @@
 
 import { CitationList } from "@/components/citation/CitationCard";
 import { MemoryPanel } from "@/components/memory/MemoryPanel";
+import { CalendarPanel } from "@/components/calendar/CalendarPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Database, Brain } from "lucide-react";
 import type { Citation } from "@/lib/api";
 
-interface MemorySidebarProps {
+export type RightPanelMode = "memories" | "calendar";
+
+interface RightPanelProps {
+    mode: RightPanelMode;
     citations: Citation[];
     className?: string;
 }
 
 /**
- * MemorySidebar Component
+ * RightPanel Component
  * 
- * Reorganized right sidebar UI with two sections:
- * 1. Referenced Memories (Section 1: 참고한 기억)
- * 2. Memory Repository (Section 2: 기억 저장소)
- * 
- * Aesthetic improvements: Glassmorphism, improved spacing, and always-visible headers.
+ * 우측 패널 - 모드에 따라 다른 UI 표시
+ * - memories: 기존 기억 패널 (참고한 기억 + 기억 저장소)
+ * - calendar: 캘린더 패널 (일정 리스트 + 빠른 추가)
  */
-export function MemorySidebar({ citations, className = "" }: MemorySidebarProps) {
+export function RightPanel({ mode, citations, className = "" }: RightPanelProps) {
+    if (mode === "calendar") {
+        return <CalendarPanel className={className} />;
+    }
+
+    // memories 모드 (기존 UI)
     return (
         <div className={`flex flex-col h-full bg-background/80 backdrop-blur-md border-l border-border/50 ${className}`}>
             {/* Section 1: 참고한 기억 (Referenced Memories) - Dynamic max height (35%) */}
@@ -68,4 +75,12 @@ export function MemorySidebar({ citations, className = "" }: MemorySidebarProps)
             </section>
         </div>
     );
+}
+
+/**
+ * Backward compatibility: MemorySidebar
+ * 기존 코드와의 호환성을 위해 유지
+ */
+export function MemorySidebar({ citations, className = "" }: { citations: Citation[]; className?: string }) {
+    return <RightPanel mode="memories" citations={citations} className={className} />;
 }

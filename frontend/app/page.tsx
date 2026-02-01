@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { ChatContainer } from "@/components/chat/ChatContainer";
 import { EmptyState } from "@/components/chat/EmptyState";
-import { MemorySidebar } from "@/components/memory/MemorySidebar";
+import { RightPanel, MemorySidebar, type RightPanelMode } from "@/components/memory/MemorySidebar";
 import { Header } from "@/components/layout/Header";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToastContainer } from "@/components/ui/Toast";
@@ -27,9 +27,10 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [citations, setCitations] = useState<Citation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showMemoryPanel, setShowMemoryPanel] = useState(true);
+  const [showMemoryPanel, setShowMemoryPanel] = useState(false);
   const [showMemoryMobile, setShowMemoryMobile] = useState(false);
   const [showDashboard, setShowDashboard] = useState(true);
+  const [rightPanelMode, setRightPanelMode] = useState<RightPanelMode>("memories");
   const chatInputRef = useRef<ChatInputRef>(null);
 
   // 패널 상태를 전역으로 동기화
@@ -100,7 +101,8 @@ export default function Home() {
   }, []);
 
   const handleMemoryClick = useCallback(() => {
-    // Toggle memory panel
+    // Toggle memory panel, switch to memories mode
+    setRightPanelMode("memories");
     if (window.innerWidth >= 1024) {
       setShowMemoryPanel((prev) => !prev);
     } else {
@@ -109,8 +111,21 @@ export default function Home() {
   }, []);
 
   const handleScheduleClick = useCallback(() => {
-    showToast("준비 중입니다", "info");
-  }, []);
+    // Toggle calendar panel if already in calendar mode, otherwise switch to calendar mode
+    if (window.innerWidth >= 1024) {
+      if (rightPanelMode === "calendar" && showMemoryPanel) {
+        // Already in calendar mode and panel is open, so close it
+        setShowMemoryPanel(false);
+      } else {
+        // Switch to calendar mode and show panel
+        setRightPanelMode("calendar");
+        setShowMemoryPanel(true);
+      }
+    } else {
+      setRightPanelMode("calendar");
+      setShowMemoryMobile(true);
+    }
+  }, [rightPanelMode, showMemoryPanel]);
 
   const handleSettingsClick = useCallback(() => {
     showToast("준비 중입니다", "info");
@@ -149,14 +164,14 @@ export default function Home() {
             ${showMemoryPanel ? "hidden lg:flex" : "hidden"}
           `}
         >
-          <MemorySidebar citations={citations} className="flex-1" />
+          <RightPanel mode={rightPanelMode} citations={citations} className="flex-1" />
         </aside>
       </div>
 
       {/* Mobile Memory Sheet */}
       <Sheet open={showMemoryMobile} onOpenChange={setShowMemoryMobile}>
         <SheetContent side="right" className="w-80 p-0">
-          <MemorySidebar citations={citations} className="flex-1" />
+          <RightPanel mode={rightPanelMode} citations={citations} className="flex-1" />
         </SheetContent>
       </Sheet>
 

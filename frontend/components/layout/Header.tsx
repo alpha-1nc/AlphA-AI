@@ -52,10 +52,10 @@ export function Header({
                     onClick={onHomeClick}
                 >
                     <Image
-                        src="/logo.png"
+                        src={mounted && theme === "dark" ? "/logo-dark.png" : "/logo.png"}
                         alt="AlphA AI Logo"
                         fill
-                        className={`object-contain ${mounted && theme === "dark" ? "logo-dark-mode" : ""}`}
+                        className="object-contain"
                         priority
                     />
                 </div>
