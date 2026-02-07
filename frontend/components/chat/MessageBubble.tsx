@@ -193,7 +193,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             "px-4 py-3 rounded-2xl shadow-sm transition-all duration-200",
             isUser
               ? "bg-[#333] text-white rounded-br-sm dark:bg-white dark:text-black dark:shadow-lg"
-              : "bg-gray-100 text-black rounded-bl-sm hover:shadow-md dark:bg-[#262626] dark:text-white"
+              : "bg-neutral-200 text-black rounded-bl-sm hover:shadow-md dark:bg-[#262626] dark:text-white"
           )}
         >
           <p className="text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere leading-relaxed">
@@ -222,7 +222,7 @@ export function TypingIndicator() {
       <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-neutral-200 text-neutral-800 dark:bg-neutral-700 dark:text-white shadow-md">
         <Bot className="w-5 h-5" />
       </div>
-      <div className="bg-gray-100 text-black dark:bg-[#262626] dark:text-white px-4 py-3 rounded-2xl rounded-bl-sm shadow-sm">
+      <div className="bg-neutral-200 text-black dark:bg-[#262626] dark:text-white px-4 py-3 rounded-2xl rounded-bl-sm shadow-sm">
         <div className="flex gap-1">
           <span className="typing-dot w-2 h-2 bg-neutral-600 dark:bg-neutral-400 rounded-full" />
           <span className="typing-dot w-2 h-2 bg-neutral-600 dark:bg-neutral-400 rounded-full" />

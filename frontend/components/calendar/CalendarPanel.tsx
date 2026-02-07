@@ -51,7 +51,11 @@ export function CalendarPanel({ className = "" }: CalendarPanelProps) {
             setTomorrowEvents(tomorrow);
         } catch (err: any) {
             console.error("Failed to load calendar events:", err);
-            setError(err?.detail || err?.message || "일정을 불러올 수 없습니다");
+            // err.detail이 객체일 수 있으므로 문자열만 추출
+            const errorMsg = typeof err?.detail === 'string'
+                ? err.detail
+                : err?.detail?.detail || err?.message || "일정을 불러올 수 없습니다";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -93,7 +97,11 @@ export function CalendarPanel({ className = "" }: CalendarPanelProps) {
             await loadEvents();
         } catch (err: any) {
             console.error("Failed to create event:", err);
-            setError(err?.detail || err?.message || "일정 생성 실패");
+            // err.detail이 객체일 수 있으므로 문자열만 추출
+            const errorMsg = typeof err?.detail === 'string'
+                ? err.detail
+                : err?.detail?.detail || err?.message || "일정 생성 실패";
+            setError(errorMsg);
         } finally {
             setCreating(false);
         }
